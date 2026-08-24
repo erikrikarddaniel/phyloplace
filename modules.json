@@ -57,7 +57,7 @@
                     },
                     "hmmer/hmmrank": {
                         "branch": "master",
-                        "git_sha": "f2bed902e13076698e7d59d1fedf5c083f6f17c0",
+                        "git_sha": "106170c99010f5429b24c610f2da528e47ca3276",
                         "installed_by": ["fasta_hmmsearch_rank_fastas"]
                     },
                     "hmmer/hmmsearch": {
@@ -86,7 +86,7 @@
                 "nf-core": {
                     "fasta_hmmsearch_rank_fastas": {
                         "branch": "master",
-                        "git_sha": "56521ad3d62f3bcc12285fe4b62ea2d574433090",
+                        "git_sha": "106170c99010f5429b24c610f2da528e47ca3276",
                         "installed_by": ["subworkflows"]
                     },
                     "fasta_newick_epang_gappa": {
