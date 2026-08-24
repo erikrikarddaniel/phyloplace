@@ -7,7 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
+    - [#71](https://github.com/nf-core/phyloplace/pull/71) - New `--save_domtblout` option, saving hmmsearch's per-domain hit table in "search and place" mode ([#69](https://github.com/nf-core/phyloplace/issues/69)) (by @erikrikarddaniel)
+
 ### `Fixed`
+
+    - [#71](https://github.com/nf-core/phyloplace/pull/71) - Correct the `hmmsearch` output files listed in the output documentation, where the human-readable table was listed as `*.tbl.gz` instead of `*.txt.gz` (by @erikrikarddaniel)
 
 ### `Changed`
 

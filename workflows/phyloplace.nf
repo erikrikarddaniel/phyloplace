@@ -41,6 +41,7 @@ workflow PHYLOPLACE {
     ch_phyloplace_data  // channel: [ meta: [ id: string ], data: [ alignmethod: string, queryseqfile: fasta, refseqfile: fasta, refphylogeny: newick, hmmfile: hmm, model: string, taxonomy: tsv ] ]
     ch_phylosearch_data // channel: [ meta: [ id: string, min_bitscore: int ], data: [ alignmethod: string, hmm: file, extract_hmm: file, refseqfile: fasta, refphylogeny: newick, model: string, taxonomy: tsv ] ]
     ch_sequence_fasta   // channel: sequences to search
+    save_domtblout      // boolean: also save hmmsearch's per-domain hit table (--domtblout)
     multiqc_config
     multiqc_logo
     multiqc_methods_description
@@ -70,7 +71,7 @@ workflow PHYLOPLACE {
         )
         .set { ch_search_profiles }
 
-    FASTA_HMMSEARCH_RANK_FASTAS(ch_search_profiles, ch_sequence_fasta)
+    FASTA_HMMSEARCH_RANK_FASTAS(ch_search_profiles, ch_sequence_fasta, save_domtblout)
 
     ch_phyloplace_data = FASTA_HMMSEARCH_RANK_FASTAS.out.seqfastas
         .join(

@@ -42,6 +42,12 @@
                     "help_text": "Sequences from this file matching an HMM profile, will be placed in the reference phylogeny corresponding to the HMM profile.",
                     "fa_icon": "fas fa-file-tsv"
                 },
+                "save_domtblout": {
+                    "type": "boolean",
+                    "description": "Save the per-domain hit table (`--domtblout`) from hmmsearch.",
+                    "help_text": "In \"search and place\" mode, also write hmmsearch's per-domain hit table, one gzipped `*.domtbl.gz` file per profile, to the `hmmer` output directory. Unlike the per-sequence table, this one carries alignment coordinates for each domain, which are needed to work out profile coverage or to find genes split over several ORFs.",
+                    "fa_icon": "fas fa-table"
+                },
                 "id": {
                     "type": "string",
                     "description": "Name of analysis",

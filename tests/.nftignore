@@ -13,6 +13,7 @@ gappa/*.profile.tsv
 gappa/*.sativa.tsv
 hmmer/*.hmmbuild.txt
 hmmer/*.hmm.gz
+hmmer/*.domtbl.gz
 hmmer/*.tbl.gz
 hmmer/*.txt.gz
 multiqc/multiqc_data/fastqc_top_overrepresented_sequences_table.txt
