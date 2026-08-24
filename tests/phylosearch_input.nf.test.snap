@@ -75,18 +75,23 @@
                 "gappa/bac16s.taxonomy.profile.tsv",
                 "gappa/bac16s.taxonomy.sativa.tsv",
                 "hmmer",
+                "hmmer/arc.domtbl.gz",
                 "hmmer/arc.in.hmm",
                 "hmmer/arc.tbl.gz",
                 "hmmer/arc.txt.gz",
+                "hmmer/bac16s.domtbl.gz",
                 "hmmer/bac16s.hmm",
                 "hmmer/bac16s.tbl.gz",
                 "hmmer/bac16s.txt.gz",
+                "hmmer/euk18s.domtbl.gz",
                 "hmmer/euk18s.hmm",
                 "hmmer/euk18s.tbl.gz",
                 "hmmer/euk18s.txt.gz",
+                "hmmer/euk28s.domtbl.gz",
                 "hmmer/euk28s.hmm",
                 "hmmer/euk28s.tbl.gz",
                 "hmmer/euk28s.txt.gz",
+                "hmmer/mito16s.domtbl.gz",
                 "hmmer/mito16s.tbl.gz",
                 "hmmer/mito16s.txt.gz",
                 "hmmer/rank.hmmrank.tsv.gz",
@@ -135,10 +140,10 @@
             54,
             11
         ],
-        "timestamp": "2026-06-16T10:53:19.7571168",
+        "timestamp": "2026-08-24T10:54:00.347005736",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "26.04.3"
+            "nextflow": "26.04.6"
         }
     }
 }

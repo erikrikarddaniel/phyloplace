@@ -44,8 +44,10 @@ The MAFFT alignment strategy keeps the structure of the original reference align
   - `*.ref.hmmbuild.txt`: Log from HMM profile build.
   - `*.ref.hmm.gz`: HMM profile made from the reference alignment, if not provided using the `hmmfile` parameter.
   - `*.ref.unaligned.afa.gz`: "Unaligned", i.e. without gap characters, reference sequences in Fasta format.
-  - `*.tbl.gz`: Table format (`-tblout`) results for individual `hmmsearch` runs in "search and place" mode
-  - `*.tbl.gz`: Standard, human-readable, format results for individual `hmmsearch` runs in "search and place" mode
+  - `*.tbl.gz`: Per-sequence hit table (`--tblout`) for individual `hmmsearch` runs in "search and place" mode
+  - `*.domtbl.gz`: Per-domain hit table (`--domtblout`) for individual `hmmsearch` runs in "search and place" mode, only written when `--save_domtblout` is set.
+    Unlike the per-sequence table, this one carries alignment coordinates for each domain, which are needed to work out profile coverage or to find genes split over several ORFs.
+  - `*.txt.gz`: Standard, human-readable, format results for individual `hmmsearch` runs in "search and place" mode
   - `*.hmmrank.tsv.gz`: Summarised `hmmsearch` results
 
 </details>

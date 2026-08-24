@@ -68,6 +68,17 @@ meth-dehydr,PF00389.hmm,PF00389.alnfaa,PF00389.newick,LG+F+I,PF00848.taxonomy.ts
 rnr,PF00788.hmm,,,,
 ```
 
+### Saving the per-domain hit table
+
+By default the pipeline keeps `hmmsearch`'s per-sequence hit table (`--tblout`) but not its per-domain one.
+Add `--save_domtblout` to also write the per-domain table, as one gzipped `*.domtbl.gz` file per profile in the `hmmer` output directory.
+
+```bash
+--phylosearch_input '[path to samplesheet file]' --search_fasta '[path to fasta file]' --save_domtblout
+```
+
+The per-domain table is the only output that carries alignment coordinates, so it is what you need to work out how much of a profile a hit covers, or to find a gene split over several adjacent ORFs where no single ORF covers enough of the profile to be classified on its own.
+
 ## Running the pipeline
 
 Run the pipeline with command line parameters specifying the placement parameters as follows:
