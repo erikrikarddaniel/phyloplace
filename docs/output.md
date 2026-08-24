@@ -48,7 +48,11 @@ The MAFFT alignment strategy keeps the structure of the original reference align
   - `*.domtbl.gz`: Per-domain hit table (`--domtblout`) for individual `hmmsearch` runs in "search and place" mode, only written when `--save_domtblout` is set.
     Unlike the per-sequence table, this one carries alignment coordinates for each domain, which are needed to work out profile coverage or to find genes split over several ORFs.
   - `*.txt.gz`: Standard, human-readable, format results for individual `hmmsearch` runs in "search and place" mode
-  - `*.hmmrank.tsv.gz`: Summarised `hmmsearch` results
+  - `*.hmmrank.tsv.gz`: Summarised `hmmsearch` results, one row per sequence and profile, ranking the profiles that matched each sequence.
+    When `--save_domtblout` is set, each row also carries the lengths of the sequence (`tlen`) and the profile (`qlen`), plus four columns for each of the three coordinate sets HMMER reports: `hmm` (position in the profile), `ali` (the aligned part of the sequence) and `env` (the wider region the alignment is likely to lie within).
+    For a set `x`, `x_from` and `x_to` are the outer bounds of the match, while `x_len` is how much of that span the sequence's domains actually cover, so a hit whose domains are scattered has an `x_len` well below `x_to - x_from`.
+    `x_n_islands` counts the separate stretches that coverage falls into: 1 for a single continuous match, more when the domains are broken up.
+    Coverage counts every domain HMMER reported, however weak on its own; which sequences are reported at all is still decided by the full-sequence scores, exactly as when the coordinates are not requested.
 
 </details>
 
