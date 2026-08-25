@@ -53,6 +53,8 @@ The MAFFT alignment strategy keeps the structure of the original reference align
     For a set `x`, `x_from` and `x_to` are the outer bounds of the match, while `x_len` is how much of that span the sequence's domains actually cover, so a hit whose domains are scattered has an `x_len` well below `x_to - x_from`.
     `x_n_islands` counts the separate stretches that coverage falls into: 1 for a single continuous match, more when the domains are broken up.
     Coverage counts every domain HMMER reported, however weak on its own; which sequences are reported at all is still decided by the full-sequence scores, exactly as when the coordinates are not requested.
+    A sequence is reported at all on the per-sequence threshold, whereas a domain has to clear the per-domain one, so a hit can be ranked here with no domain records behind it at all.
+    Those rows carry `NA` in every column above, which is deliberate: an empty value is the clearest signal that `hmmsearch` reported no domains for the hit, and it keeps such rows distinguishable from ones whose coordinates were genuinely computed.
 
 </details>
 
