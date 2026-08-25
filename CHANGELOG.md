@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
+    - [#72](https://github.com/nf-core/phyloplace/pull/72) - Alignment coordinates, lengths and coverage for each hit in the ranked `hmmsearch` summary, when `--save_domtblout` is set ([#70](https://github.com/nf-core/phyloplace/issues/70)) (by @erikrikarddaniel)
     - [#71](https://github.com/nf-core/phyloplace/pull/71) - New `--save_domtblout` option, saving hmmsearch's per-domain hit table in "search and place" mode ([#69](https://github.com/nf-core/phyloplace/issues/69)) (by @erikrikarddaniel)
 
 ### `Fixed`
