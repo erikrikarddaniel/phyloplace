@@ -74,7 +74,7 @@
                     "format": "file-path",
                     "mimetype": "text/plain",
                     "description": "File with reference sequences. Any format supported by HMMER tools.",
-                    "help_text": "If the sequences are not aligned, you need to provide an alignment option, e.g. --hmmfile.",
+                    "help_text": "If the sequences are not aligned, you need to provide an alignment option, e.g. --hmmfile. When refseqfile is FASTA and --taxonomy is not given, taxonomy is instead derived from each record's own header, GTDB-style ('>id taxonomy;string').",
                     "fa_icon": "far fa-file-code"
                 },
                 "hmmfile": {
@@ -102,7 +102,7 @@
                     "mimetype": "text/tab-separated-values",
                     "pattern": "^\\S+\\.tsv$",
                     "description": "Tab-separated file with taxonomy assignments of reference sequences.",
-                    "help_text": "The first column should consist of names of reference sequences, the second of taxonomy strings, e.g. 'Bacteria;Proteobacteria;Gammaproteobacteria;Enterobacterales;Enterobacteriaceae;Escherichia;Escherichia coli'.",
+                    "help_text": "The first column should consist of names of reference sequences, the second of taxonomy strings, e.g. 'Bacteria;Proteobacteria;Gammaproteobacteria;Enterobacterales;Enterobacteriaceae;Escherichia;Escherichia coli'. If omitted and refseqfile is FASTA, taxonomy is instead derived from each record's own header. If both are given, this file wins (a warning is logged if the headers also carry embedded taxonomy text).",
                     "fa_icon": "fas fa-file-tsv"
                 },
                 "outdir": {

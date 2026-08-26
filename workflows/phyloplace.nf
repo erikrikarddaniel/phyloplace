@@ -5,6 +5,7 @@
 */
 
 include { HMMER_HMMEXTRACT              } from '../modules/local/hmmer/hmmextract'
+include { CUSTOM_RESOLVETAXONOMY        } from '../modules/nf-core/custom/resolvetaxonomy/main'
 include { FASTA_HMMSEARCH_RANK_FASTAS   } from '../subworkflows/nf-core/fasta_hmmsearch_rank_fastas/main'
 include { FASTA_NEWICK_EPANG_GAPPA      } from '../subworkflows/nf-core/fasta_newick_epang_gappa/main'
 include { MULTIQC                       } from '../modules/nf-core/multiqc/main'
@@ -27,6 +28,15 @@ include { methodsDescriptionText        } from '../subworkflows/local/utils_nfco
 def indentBlock(text, indent) {
     def pad = ' ' * indent
     text.readLines().collect { pad + it }.join('\n')
+}
+
+//
+// Whether a reference sequence file is FASTA -- only FASTA headers have room for embedded
+// taxonomy text (GTDB-style `>id taxonomy;string`), so this gates whether
+// CUSTOM_RESOLVETAXONOMY is worth invoking on a given row at all.
+//
+def isFastaFile(path) {
+    path.withReader { reader -> reader.readLine()?.trim()?.startsWith('>') } ?: false
 }
 
 /*
@@ -91,6 +101,49 @@ workflow PHYLOPLACE {
             ]
         ] }
         .mix(ch_phyloplace_data)
+
+    //
+    // MODULE: Derive taxonomy from refseqfile's own FASTA headers (GTDB-style
+    // `>id taxonomy;string`) when no --taxonomy file was given, instead of just
+    // proceeding without any taxonomic classification. Only applies when refseqfile
+    // is itself FASTA -- other HMMER-supported formats have no room for embedded
+    // taxonomy text and are passed through unchanged. Headers are stripped down to a
+    // bare id regardless, since some downstream tools (EPA-NG, GAPPA) keep the whole
+    // header line as the leaf name rather than just the first token.
+    //
+    ch_phyloplace_data
+        .branch { row ->
+            fasta: isFastaFile(row.data.refseqfile)
+            other: true
+        }
+        .set { ch_pp_by_format }
+
+    CUSTOM_RESOLVETAXONOMY(
+        ch_pp_by_format.fasta.map { row -> [ row.meta, row.data.taxonomy ?: [], row.data.refseqfile, false ] }
+    )
+
+    // --taxonomy is fully optional, so an empty resolved file (no embedded text
+    // found anywhere, same as no --taxonomy given at all) means "no taxonomy" --
+    // reset it to `[]` to keep GAPPA_ASSIGN's own ext.when skip working, rather than
+    // handing it a real-but-empty file it would otherwise try (and fail) to use.
+    CUSTOM_RESOLVETAXONOMY.out.warnings.subscribe { _meta, warnings_file ->
+        def text = warnings_file.text.trim()
+        if (text) log.warn(text)
+    }
+
+    ch_pp_by_format.fasta
+        .map { row -> [ [ id: row.meta.id ], row ] }
+        .join(CUSTOM_RESOLVETAXONOMY.out.taxonomy.map { meta, tax -> [ [ id: meta.id ], tax ] })
+        .join(CUSTOM_RESOLVETAXONOMY.out.sequences.map { meta, seq -> [ [ id: meta.id ], seq ] })
+        .map { _id, row, tax, seq -> [
+            meta: row.meta,
+            data: row.data + [
+                refseqfile: seq,
+                taxonomy: tax.isEmpty() ? [] : tax,
+            ]
+        ] }
+        .mix(ch_pp_by_format.other)
+        .set { ch_phyloplace_data }
 
     //
     // SUBWORKFLOW: Run phylogenetic placement

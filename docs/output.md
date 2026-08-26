@@ -11,11 +11,27 @@ The directories listed below will be created in the results directory after the 
 The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes data using the following steps:
 
 - [HMMER](#hmmer) - If the pipeline is run in "search and place" mode, an initial HMMER search is performed to identify query sequences for placement
+- [Taxonomy](#taxonomy) - If `--refseqfile` is FASTA and no `--taxonomy` file is given, taxonomy is derived from the reference sequences' own headers
 - [Alignment](#alignment) - Align query sequences to the reference alignment
 - [Placement](#placement) - Place query sequences in the reference phylogeny
 - [Summary](#summary) - Summarise placement with a grafted tree, a classification and a heattree
 - [MultiQC](#multiqc) - Aggregate report describing results and QC from the whole pipeline
 - [Pipeline information](#pipeline-information) - Report metrics generated during the workflow execution
+
+### Taxonomy
+
+When `--refseqfile` is FASTA and `--taxonomy` is not given, taxonomy is instead derived from each reference sequence's own header (see [usage.md](usage.md#deriving-taxonomy-from-fasta-headers)).
+Headers are stripped down to a bare id in the process, regardless of whether taxonomy came from a header or an explicit `--taxonomy` file.
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `resolvetaxonomy/`
+  - `*.resolved.tax`: Resolved taxonomy, tab-separated (`id<TAB>taxonomy;string`).
+  - `*.resolved.*`: Reference sequences, same format as `--refseqfile`, headers stripped to a bare id.
+  - `*.warnings.txt`: One line per warning (e.g. records with no taxonomy from either source); empty if none.
+
+</details>
 
 ### Alignment
 
@@ -105,7 +121,7 @@ Phylogenetic placement of query sequences is performed with [EPA-NG](https://git
 A number of summary operations are performed with [Gappa](https://github.com/lczech/gappa) after placement.
 First, the query sequences are grafted on to the reference tree to produce a comprehensive tree containing all sequences.
 Second, the "heattree" function is called which produces phylogenies in different formats with branches coloured to indicate the number of placed sequences in various parts of the tree.
-Third, if the user provides a classification of the reference sequences, a classification of query sequences is performed.
+Third, if a classification of the reference sequences is available (see [Taxonomy](#taxonomy)), a classification of query sequences is performed.
 
 <details markdown="1">
 <summary>Output files</summary>
