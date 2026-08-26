@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Changed`
 
+    - [#73](https://github.com/nf-core/phyloplace/pull/73) - Update `seqtk/subseq` and `fasta_hmmsearch_rank_fastas` to fix output filenames glomming the input sequence filename onto the prefix ([nf-core/modules#12779](https://github.com/nf-core/modules/issues/12779)) (by @erikrikarddaniel)
     - [#68](https://github.com/nf-core/phyloplace/pull/68) - Template update to 4.1.0 (by @erikrikarddaniel)
 
 ### `Dependencies`
