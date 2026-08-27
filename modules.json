@@ -12,7 +12,7 @@
                     },
                     "custom/resolvetaxonomy": {
                         "branch": "master",
-                        "git_sha": "61366028cc6bfee662a6b8963e15818bde087d20",
+                        "git_sha": "74be114b46468b8387826e7ffe5bf7c25ba2fc09",
                         "installed_by": ["modules"]
                     },
                     "epang/place": {
