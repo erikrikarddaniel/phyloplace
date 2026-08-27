@@ -80,7 +80,7 @@ ACGT...
 
 A few things worth knowing about this:
 
-- If both `--taxonomy` and embedded header text are present, the file wins -- a warning is logged, not a silent ignore.
+- If both `--taxonomy` and embedded header text are present (through `--refseqfile`), the taxonomy file wins -- a warning is logged though.
 - Reference sequence headers are stripped down to a bare id afterwards, regardless of which source was used, since some downstream tools keep the whole header line as the sequence/leaf name rather than just the first token.
 - This only applies when `--refseqfile` is FASTA -- other formats HMMER tools accept (e.g. aligned Phylip) have no room for embedded taxonomy text and keep needing a separate `--taxonomy` file.
 - The samplesheet formats above support multiple rows, each with its own `refseqfile`/`taxonomy` pair -- this applies per row, not once globally.
