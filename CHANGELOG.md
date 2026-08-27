@@ -17,13 +17,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Changed`
 
+    - [#NN](https://github.com/nf-core/phyloplace/pull/NN) - Adopt typed `params` blocks for pipeline-specific parameters, fixing boolean options (e.g. `--save_domtblout false`) that couldn't be turned off from the command line ([#74](https://github.com/nf-core/phyloplace/issues/74)) (by @erikrikarddaniel). Raises the minimum required Nextflow version to `26.04.0`.
     - [#73](https://github.com/nf-core/phyloplace/pull/73) - Update `seqtk/subseq` and `fasta_hmmsearch_rank_fastas` to fix output filenames glomming the input sequence filename onto the prefix ([nf-core/modules#12779](https://github.com/nf-core/modules/issues/12779)) (by @erikrikarddaniel)
     - [#68](https://github.com/nf-core/phyloplace/pull/68) - Template update to 4.1.0 (by @erikrikarddaniel)
 
 ### `Dependencies`
 
-| software | previously | now |
-| -------- | ---------- | --- |
+| software  | previously | now       |
+| --------- | ---------- | --------- |
+| Nextflow  | >=25.10.4  | >=26.04.0 |
+| nf-schema | 2.7.2      | 2.8.0     |
 
 ### `Deprecated`
 
