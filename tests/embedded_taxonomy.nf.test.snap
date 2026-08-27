@@ -1,5 +1,5 @@
 {
-    "-profile test_hmmfile": {
+    "-profile test_embedded_taxonomy": {
         "content": [
             {
                 "CUSTOM_RESOLVETAXONOMY": {
@@ -31,11 +31,18 @@
                 "HMMER_HMMALIGNREF": {
                     "hmmer": 3.4
                 },
+                "HMMER_HMMBUILD": {
+                    "hmmer": 3.4
+                },
                 "HMMER_MASKQUERY": {
                     "easel": 0.49,
                     "hmmer": 3.4
                 },
                 "HMMER_MASKREF": {
+                    "easel": 0.49,
+                    "hmmer": 3.4
+                },
+                "HMMER_UNALIGNREF": {
                     "easel": 0.49,
                     "hmmer": 3.4
                 },
@@ -63,9 +70,12 @@
                 "hmmer/placement.query.hmmalign.masked.afa.gz",
                 "hmmer/placement.query.hmmalign.masked.sthlm.gz",
                 "hmmer/placement.query.hmmalign.sto.gz",
+                "hmmer/placement.ref.hmm.gz",
                 "hmmer/placement.ref.hmmalign.masked.afa.gz",
                 "hmmer/placement.ref.hmmalign.masked.sthlm.gz",
                 "hmmer/placement.ref.hmmalign.sto.gz",
+                "hmmer/placement.ref.hmmbuild.txt",
+                "hmmer/placement.ref.unaligned.afa.gz",
                 "multiqc",
                 "multiqc/multiqc_data",
                 "multiqc/multiqc_data/llms-full.txt",
@@ -79,7 +89,7 @@
                 "pipeline_info",
                 "pipeline_info/nf_core_phyloplace_software_mqc_versions.yml",
                 "resolvetaxonomy",
-                "resolvetaxonomy/placement.resolved.faa",
+                "resolvetaxonomy/placement.resolved.alnfaa",
                 "resolvetaxonomy/placement.resolved.tax",
                 "resolvetaxonomy/placement.warnings.txt"
             ],
@@ -92,16 +102,18 @@
                 "placement.ref.hmmalign.masked.afa.gz:md5,3452f0d4646209116c3b60f1c77d5ba3",
                 "placement.ref.hmmalign.masked.sthlm.gz:md5,b470181ddc1af95e3b2b5118d1d7a99d",
                 "placement.ref.hmmalign.sto.gz:md5,bf7853d45ac93f47f1722ee2af7ca0dc",
+                "placement.ref.unaligned.afa.gz:md5,157926898092d435beb308f8880a3910",
                 "multiqc_citations.txt:md5,4c806e63a283ec1b7e78cdae3a923d4f",
-                "placement.resolved.faa:md5,2dbd09b57afcec4cbf12852094b95763",
-                "placement.resolved.tax:md5,9fb30dd6893e5a968f4403ad3c035bd2",
+                "placement.resolved.alnfaa:md5,6a8a43da1544439c127bf52ac5167b41",
+                "placement.resolved.tax:md5,b8f72eed0f58be66bdff4c21de1c0afd",
                 "placement.warnings.txt:md5,d41d8cd98f00b204e9800998ecf8427e"
             ],
             6,
             5,
-            2
+            2,
+            ""
         ],
-        "timestamp": "2026-08-26T16:47:42.431618908",
+        "timestamp": "2026-08-26T17:20:10.363904792",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"

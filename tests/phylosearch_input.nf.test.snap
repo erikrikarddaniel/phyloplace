@@ -6,6 +6,9 @@
                     "clustalo": "1.2.4",
                     "pigz": 2.8
                 },
+                "CUSTOM_RESOLVETAXONOMY": {
+                    "biopython": 1.84
+                },
                 "EPANG_PLACE": {
                     "epa-ng": "0.3.8"
                 },
@@ -107,6 +110,13 @@
                 "multiqc/multiqc_report.html",
                 "pipeline_info",
                 "pipeline_info/nf_core_phyloplace_software_mqc_versions.yml",
+                "resolvetaxonomy",
+                "resolvetaxonomy/arc.resolved.fasta",
+                "resolvetaxonomy/arc.resolved.tax",
+                "resolvetaxonomy/arc.warnings.txt",
+                "resolvetaxonomy/bac16s.resolved.alnfna",
+                "resolvetaxonomy/bac16s.resolved.tax",
+                "resolvetaxonomy/bac16s.warnings.txt",
                 "seqtk",
                 "seqtk/arc.fa.gz",
                 "seqtk/bac16s.fa.gz",
@@ -129,6 +139,12 @@
                 "euk28s.hmm:md5,5686ecd69ead0cabfefb74320d1207fb",
                 "rank.hmmrank.tsv.gz:md5,c5634dcd5d13efb396e01cd8fd8324eb",
                 "multiqc_citations.txt:md5,4c806e63a283ec1b7e78cdae3a923d4f",
+                "arc.resolved.fasta:md5,5b5e525bdf70c97f1c9abf61e7c9457e",
+                "arc.resolved.tax:md5,1983c36e63cdb0706ce82788c3aa6e2c",
+                "arc.warnings.txt:md5,d41d8cd98f00b204e9800998ecf8427e",
+                "bac16s.resolved.alnfna:md5,7b07e92c64d33f5cd47f0771ebb35593",
+                "bac16s.resolved.tax:md5,2e5ad67e642b8cfd13f1a1198f593fe1",
+                "bac16s.warnings.txt:md5,d41d8cd98f00b204e9800998ecf8427e",
                 "arc.fa.gz:md5,8c00033483c62c0e64b8fc4f958eb117",
                 "bac16s.fa.gz:md5,3e2e39f8d78a5e3965f0c4dc804dd977",
                 "euk18s.fa.gz:md5,c0117af2379df85b13890efde1bcdda4"
@@ -140,7 +156,7 @@
             54,
             11
         ],
-        "timestamp": "2026-08-24T21:14:35.392802354",
+        "timestamp": "2026-08-26T17:11:06.000817378",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"

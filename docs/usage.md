@@ -68,6 +68,24 @@ meth-dehydr,PF00389.hmm,PF00389.alnfaa,PF00389.newick,LG+F+I,PF00848.taxonomy.ts
 rnr,PF00788.hmm,,,,
 ```
 
+## Deriving taxonomy from FASTA headers
+
+`--taxonomy` is optional.
+If it's omitted and `--refseqfile` is FASTA, taxonomy is instead derived from each reference sequence's own header, following [GTDB](https://gtdb.ecogenomic.org/)'s own single-file convention: the id followed by a taxonomy string, space-separated.
+
+```fasta title="refseqfile.fasta"
+>ref_seq_1 Bacteria;Proteobacteria;Gammaproteobacteria;Enterobacterales;Enterobacteriaceae;Escherichia;Escherichia coli
+ACGT...
+```
+
+A few things worth knowing about this:
+
+- If both `--taxonomy` and embedded header text are present (through `--refseqfile`), the taxonomy file wins -- a warning is logged though.
+- Reference sequence headers are stripped down to a bare id afterwards, regardless of which source was used, since some downstream tools keep the whole header line as the sequence/leaf name rather than just the first token.
+- This only applies when `--refseqfile` is FASTA -- other formats HMMER tools accept (e.g. aligned Phylip) have no room for embedded taxonomy text and keep needing a separate `--taxonomy` file.
+- The samplesheet formats above support multiple rows, each with its own `refseqfile`/`taxonomy` pair -- this applies per row, not once globally.
+- If neither a `--taxonomy` file nor embedded header text is available, the pipeline proceeds without taxonomic classification, same as before -- this is not an error.
+
 ### Saving the per-domain hit table
 
 By default the pipeline keeps `hmmsearch`'s per-sequence hit table (`--tblout`) but not its per-domain one.

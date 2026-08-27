@@ -2,6 +2,9 @@
     "-profile test_phyloplace_input": {
         "content": [
             {
+                "CUSTOM_RESOLVETAXONOMY": {
+                    "biopython": 1.84
+                },
                 "EPANG_PLACE": {
                     "epa-ng": "0.3.8"
                 },
@@ -153,7 +156,23 @@
                 "multiqc/multiqc_data/multiqc_sources.txt",
                 "multiqc/multiqc_report.html",
                 "pipeline_info",
-                "pipeline_info/nf_core_phyloplace_software_mqc_versions.yml"
+                "pipeline_info/nf_core_phyloplace_software_mqc_versions.yml",
+                "resolvetaxonomy",
+                "resolvetaxonomy/PF14720mafft.resolved.alnfaa",
+                "resolvetaxonomy/PF14720mafft.resolved.tax",
+                "resolvetaxonomy/PF14720mafft.warnings.txt",
+                "resolvetaxonomy/PF14720wo.resolved.alnfaa",
+                "resolvetaxonomy/PF14720wo.resolved.tax",
+                "resolvetaxonomy/PF14720wo.warnings.txt",
+                "resolvetaxonomy/PF14720wt.resolved.alnfaa",
+                "resolvetaxonomy/PF14720wt.resolved.tax",
+                "resolvetaxonomy/PF14720wt.warnings.txt",
+                "resolvetaxonomy/nuc_hmmer.resolved.alnfna",
+                "resolvetaxonomy/nuc_hmmer.resolved.tax",
+                "resolvetaxonomy/nuc_hmmer.warnings.txt",
+                "resolvetaxonomy/nuc_mafft.resolved.alnfna",
+                "resolvetaxonomy/nuc_mafft.resolved.tax",
+                "resolvetaxonomy/nuc_mafft.warnings.txt"
             ],
             [
                 "PF14720mafft.query.fasta.gz:md5,ff1159ff8a5d2587fb20309a81da3c29",
@@ -190,7 +209,22 @@
                 "nuc_hmmer.ref.unaligned.afa.gz:md5,3cc3e86ece1474c03803c1c3c3810129",
                 "PF14720mafft.fas:md5,30090ede37d92efe6000c5d1436f6b26",
                 "nuc_mafft.fas:md5,6c36484acde5e80b9f1bbe4a4bc132e6",
-                "multiqc_citations.txt:md5,4c806e63a283ec1b7e78cdae3a923d4f"
+                "multiqc_citations.txt:md5,4c806e63a283ec1b7e78cdae3a923d4f",
+                "PF14720mafft.resolved.alnfaa:md5,6a8a43da1544439c127bf52ac5167b41",
+                "PF14720mafft.resolved.tax:md5,9fb30dd6893e5a968f4403ad3c035bd2",
+                "PF14720mafft.warnings.txt:md5,d41d8cd98f00b204e9800998ecf8427e",
+                "PF14720wo.resolved.alnfaa:md5,6a8a43da1544439c127bf52ac5167b41",
+                "PF14720wo.resolved.tax:md5,d41d8cd98f00b204e9800998ecf8427e",
+                "PF14720wo.warnings.txt:md5,1e68f7ca5224a418fc63f3cbed905ded",
+                "PF14720wt.resolved.alnfaa:md5,6a8a43da1544439c127bf52ac5167b41",
+                "PF14720wt.resolved.tax:md5,9fb30dd6893e5a968f4403ad3c035bd2",
+                "PF14720wt.warnings.txt:md5,d41d8cd98f00b204e9800998ecf8427e",
+                "nuc_hmmer.resolved.alnfna:md5,abd2f63f818786fd406e65074b8f76a8",
+                "nuc_hmmer.resolved.tax:md5,d41d8cd98f00b204e9800998ecf8427e",
+                "nuc_hmmer.warnings.txt:md5,af9640af51aa61f84ecea493c59bd24c",
+                "nuc_mafft.resolved.alnfna:md5,abd2f63f818786fd406e65074b8f76a8",
+                "nuc_mafft.resolved.tax:md5,d41d8cd98f00b204e9800998ecf8427e",
+                "nuc_mafft.warnings.txt:md5,af9640af51aa61f84ecea493c59bd24c"
             ],
             6,
             5,
@@ -199,10 +233,10 @@
             5,
             2
         ],
-        "timestamp": "2026-06-16T10:52:25.095165799",
+        "timestamp": "2026-08-26T16:53:45.696204972",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "26.04.3"
+            "nextflow": "26.04.6"
         }
     }
 }

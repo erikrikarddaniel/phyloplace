@@ -10,6 +10,11 @@
                         "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
                         "installed_by": ["fasta_newick_epang_gappa"]
                     },
+                    "custom/resolvetaxonomy": {
+                        "branch": "master",
+                        "git_sha": "74be114b46468b8387826e7ffe5bf7c25ba2fc09",
+                        "installed_by": ["modules"]
+                    },
                     "epang/place": {
                         "branch": "master",
                         "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
