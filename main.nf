@@ -46,6 +46,7 @@ params {
     email:                        String? = null
     email_on_fail:                String? = null
     plaintext_email:              Boolean = false
+    monochrome_logs:              Boolean = false
     help_full:                    Boolean = false
     show_hidden:                  Boolean = false
     version:                      Boolean = false
