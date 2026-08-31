@@ -25,6 +25,11 @@
                         "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
                         "installed_by": ["fasta_newick_epang_gappa"]
                     },
+                    "gappa/editmerge": {
+                        "branch": "master",
+                        "git_sha": "e6f9138b5000000000000000000000000000000f",
+                        "installed_by": ["modules"]
+                    },
                     "gappa/examineassign": {
                         "branch": "master",
                         "git_sha": "9359d5e7ded9180d28a82ba1881b8ec5a6a96467",
