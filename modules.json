@@ -27,7 +27,7 @@
                     },
                     "gappa/editmerge": {
                         "branch": "master",
-                        "git_sha": "e6f9138b5000000000000000000000000000000f",
+                        "git_sha": "f207500ed447dfcdae0986cb2cb92e4d0d59c845",
                         "installed_by": ["modules"]
                     },
                     "gappa/examineassign": {
