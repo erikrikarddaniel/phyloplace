@@ -124,7 +124,8 @@ workflow PHYLOPLACE {
                 refseqfile: it[2].data.refseqfile,
                 refphylogeny: it[2].data.refphylogeny,
                 model: it[2].data.model,
-                taxonomy: it[2].data.taxonomy
+                taxonomy: it[2].data.taxonomy,
+                reftreename: it[2].data.reftreename
             ]
         ] }
         .mix(ch_phyloplace_data)
