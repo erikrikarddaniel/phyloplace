@@ -133,6 +133,22 @@ Third, if a classification of the reference sequences is available (see [Taxonom
 
 </details>
 
+When rows of the sample sheet share a `reftreename` (see [Summarising several profiles on one reference tree](usage.md#summarising-several-profiles-on-one-reference-tree)), the same three summaries are also produced once for the group as a whole, on top of the per-row ones above.
+The group's placements are first merged into a single jplace file, since `gappa examine graft` summarises each jplace file it is given separately, and then grafted, classified and heat-treed from that.
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `gappa/`
+  - `*.joint.merge.jplace.gz`: The group's placements merged into one jplace file, one per `reftreename`.
+  - `*.joint.graft.newick`: Full phylogeny with the query sequences of every profile in the group grafted on to the shared reference phylogeny.
+  - `*.joint.heattree.*`: As `*.heattree.*`, but counting the placements of the whole group.
+  - `*.joint.taxonomy.*`: As `*.taxonomy.*`, but classifying the whole group's query sequences at once. Only produced when the group has a taxonomy.
+
+</details>
+
+A sequence hit by more than one profile in the group is placed once per profile, so it appears once per placement in these files, under the same name each time.
+
 ### MultiQC
 
 <details markdown="1">

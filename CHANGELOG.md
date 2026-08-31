@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
+    - [#NN](https://github.com/nf-core/phyloplace/pull/NN) - New optional `reftreename` sample sheet column, grouping rows that place onto the same reference tree so that the group is also grafted, classified and heat-treed as a whole, instead of only one profile at a time ([#78](https://github.com/nf-core/phyloplace/issues/78)) (by @erikrikarddaniel)
     - [#75](https://github.com/nf-core/phyloplace/pull/75) - Derive taxonomy from `--refseqfile` FASTA headers (GTDB single-file style) when `--taxonomy` is not given, instead of skipping taxonomic classification entirely ([#66](https://github.com/nf-core/phyloplace/issues/66)) (by @erikrikarddaniel)
     - [#72](https://github.com/nf-core/phyloplace/pull/72) - Alignment coordinates, lengths and coverage for each hit in the ranked `hmmsearch` summary, when `--save_domtblout` is set ([#70](https://github.com/nf-core/phyloplace/issues/70)) (by @erikrikarddaniel)
     - [#71](https://github.com/nf-core/phyloplace/pull/71) - New `--save_domtblout` option, saving hmmsearch's per-domain hit table in "search and place" mode ([#69](https://github.com/nf-core/phyloplace/issues/69)) (by @erikrikarddaniel)

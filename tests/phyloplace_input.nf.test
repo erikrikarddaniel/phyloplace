@@ -33,7 +33,26 @@ nextflow_pipeline {
                     path("${params.outdir}/gappa/PF14720wt.taxonomy.per_query.tsv").csv(sep: '\t', header: true).rowCount,
                     path("${params.outdir}/gappa/PF14720wt.taxonomy.profile.tsv").csv(sep: '\t', header: true).rowCount,
                     path("${params.outdir}/gappa/PF14720wt.taxonomy.sativa.tsv").csv(sep: '\t', header: true).rowCount,
-                ).match() }
+                    path("${params.outdir}/gappa/PF14720.joint.taxonomy.per_query.tsv").csv(sep: '\t', header: true).rowCount,
+                    path("${params.outdir}/gappa/PF14720.joint.taxonomy.profile.tsv").csv(sep: '\t', header: true).rowCount,
+                    path("${params.outdir}/gappa/PF14720.joint.taxonomy.sativa.tsv").csv(sep: '\t', header: true).rowCount,
+                ).match() },
+                // The joint classification of the `PF14720` group has to cover both of its
+                // rows, which is the whole point of merging them -- a joint output holding
+                // only one row's queries would still look plausible on its own.
+                { assert path("${params.outdir}/gappa/PF14720.joint.taxonomy.per_query.tsv").csv(sep: '\t', header: true).rowCount ==
+                    path("${params.outdir}/gappa/PF14720wt.taxonomy.per_query.tsv").csv(sep: '\t', header: true).rowCount +
+                    path("${params.outdir}/gappa/PF14720mafft.taxonomy.per_query.tsv").csv(sep: '\t', header: true).rowCount },
+                // Same for the grafted tree: every query of both rows is a leaf of it, so
+                // each of the three query sequences appears twice.
+                { assert new File("${params.outdir}/gappa/PF14720.joint.graft.newick").text.count('B4F2Z1_PROMH') == 2 },
+                // `cyanos16s` groups two rows that declare no taxonomy, so it gets a joint
+                // tree and heat tree but no joint classification.
+                { assert new File("${params.outdir}/gappa/cyanos16s.joint.graft.newick").exists() },
+                { assert !new File("${params.outdir}/gappa/cyanos16s.joint.taxonomy.profile.tsv").exists() },
+                // `PF14720wo` places onto the same tree as the other two `PF14720` rows but
+                // leaves `reftreename` empty, so it stays out of the group entirely.
+                { assert !new File("${params.outdir}/gappa/PF14720wo.joint.graft.newick").exists() }
             )
         }
     }

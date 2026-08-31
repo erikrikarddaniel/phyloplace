@@ -126,7 +126,7 @@ workflow PIPELINE_INITIALISATION {
 
     if ( phylosearch_input && search_fasta ) {
         ch_phylosearch_data = channel.fromList(samplesheetToList(phylosearch_input, "${projectDir}/assets/schema_phylosearch_input.json"))
-            .map { vmeta, vhmm, vextract_hmm, vrefseqfile, vrefphylogeny, vmodel, valignmethod, vtaxonomy ->
+            .map { vmeta, vhmm, vextract_hmm, vrefseqfile, vrefphylogeny, vmodel, valignmethod, vtaxonomy, vreftreename ->
                 [
                     meta: vmeta,
                     data: [
@@ -136,7 +136,8 @@ workflow PIPELINE_INITIALISATION {
                         refseqfile:   vrefseqfile,
                         refphylogeny: vrefphylogeny,
                         model:        vmodel,
-                        taxonomy:     vtaxonomy
+                        taxonomy:     vtaxonomy,
+                        reftreename:  vreftreename
                     ]
                 ]
             }
@@ -144,7 +145,7 @@ workflow PIPELINE_INITIALISATION {
             .set { ch_sequence_fasta }
     } else if ( phyloplace_input ) {
         ch_phyloplace_data = channel.fromList(samplesheetToList(phyloplace_input, "${projectDir}/assets/schema_phyloplace_input.json"))
-            .map { vmeta, vqueryseqfile, vrefseqfile, vrefphylogeny, vhmmfile, vmodel, valignmethod, vtaxonomy ->
+            .map { vmeta, vqueryseqfile, vrefseqfile, vrefphylogeny, vhmmfile, vmodel, valignmethod, vtaxonomy, vreftreename ->
                 [
                     meta: vmeta,
                     data: [
@@ -154,7 +155,8 @@ workflow PIPELINE_INITIALISATION {
                         hmmfile:      vhmmfile,
                         refphylogeny: vrefphylogeny,
                         model:        vmodel,
-                        taxonomy:     vtaxonomy
+                        taxonomy:     vtaxonomy,
+                        reftreename:  vreftreename
                     ]
                 ]
             }
@@ -168,7 +170,8 @@ workflow PIPELINE_INITIALISATION {
                 refphylogeny: file(refphylogeny),
                 hmmfile:      hmmfile     ? file(hmmfile)  : [],
                 model:        model,
-                taxonomy:     taxonomy    ? file(taxonomy) : []
+                taxonomy:     taxonomy    ? file(taxonomy) : [],
+                reftreename:  null
             ]
         ])
             .set { ch_phyloplace_data }

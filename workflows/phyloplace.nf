@@ -6,6 +6,10 @@
 
 include { HMMER_HMMEXTRACT              } from '../modules/local/hmmer/hmmextract'
 include { CUSTOM_RESOLVETAXONOMY        } from '../modules/nf-core/custom/resolvetaxonomy/main'
+include { GAPPA_EDITMERGE               } from '../modules/nf-core/gappa/editmerge/main'
+include { GAPPA_EXAMINEASSIGN    as GAPPA_JOINTASSIGN   } from '../modules/nf-core/gappa/examineassign/main'
+include { GAPPA_EXAMINEGRAFT     as GAPPA_JOINTGRAFT    } from '../modules/nf-core/gappa/examinegraft/main'
+include { GAPPA_EXAMINEHEATTREE  as GAPPA_JOINTHEATTREE } from '../modules/nf-core/gappa/examineheattree/main'
 include { FASTA_HMMSEARCH_RANK_FASTAS   } from '../subworkflows/nf-core/fasta_hmmsearch_rank_fastas/main'
 include { FASTA_NEWICK_EPANG_GAPPA      } from '../subworkflows/nf-core/fasta_newick_epang_gappa/main'
 include { MULTIQC                       } from '../modules/nf-core/multiqc/main'
@@ -37,6 +41,29 @@ def indentBlock(text, indent) {
 //
 def isFastaFile(path) {
     path.withReader { reader -> reader.readLine()?.trim()?.startsWith('>') } ?: false
+}
+
+//
+// Wrap a GAPPA heat tree SVG in a MultiQC custom content file. Reference trees with many
+// tips can produce very large SVGs; skip embedding (rather than bloating the report) above
+// this size and just point at the real output file.
+//
+def heattreeMqc(name, svg_file, section, description) {
+    def max_svg_bytes = 1_048_576
+    def size = svg_file.size()
+    def content = size <= max_svg_bytes
+        ? indentBlock(svg_file.text.replaceFirst(/^<\?xml[^>]*\?>\s*/, ''), 2)
+        : "  <p>Heat tree too large to embed (${(size / (1024 * 1024)).round(1)} MiB) &mdash; see <code>gappa/${svg_file.name}</code> in the pipeline output.</p>"
+    [
+        "${name}.heattree_mqc.yaml",
+        """id: 'heattree_${name}'
+section_name: '${section}'
+description: '${description}'
+plot_type: 'html'
+data: |
+${content}
+"""
+    ]
 }
 
 /*
@@ -102,6 +129,14 @@ workflow PHYLOPLACE {
         ] }
         .mix(ch_phyloplace_data)
 
+    // What each row's sample sheet said about taxonomy, taken before CUSTOM_RESOLVETAXONOMY
+    // below replaces it with a resolved file. The joint step further down checks that a
+    // group of rows agrees on one taxonomy, and rows that derive theirs from identical
+    // reference sequences get one resolved file each, differing by path while holding the
+    // same content -- so the declared value is the only fair thing to compare.
+    def ch_declared_taxonomy = ch_phyloplace_data
+        .map { row -> [ row.meta.id, row.data.taxonomy ? row.data.taxonomy.toString() : '' ] }
+
     //
     // MODULE: Derive taxonomy from refseqfile's own FASTA headers (GTDB-style
     // `>id taxonomy;string`) when no --taxonomy file was given, instead of just
@@ -149,6 +184,53 @@ workflow PHYLOPLACE {
     // SUBWORKFLOW: Run phylogenetic placement
     //
     FASTA_NEWICK_EPANG_GAPPA(ch_phyloplace_data)
+
+    //
+    // MODULES: Summarise placements per reference tree, on top of the per-row summaries
+    // above. Rows naming the same `reftreename` place onto one and the same reference
+    // phylogeny -- hierarchical HMM profiles built around a single reference tree, say --
+    // so their placements belong on one grafted tree rather than one each. `gappa examine
+    // assign` and `heat-tree` merge several jplace files on their own, but `graft` does
+    // not, so the group's jplace files are merged first and all three run off the merged
+    // file. Rows without a `reftreename` are left alone, as are groups of a single row,
+    // whose joint output would only duplicate its per-row one.
+    //
+    def ch_reftree_groups = ch_phyloplace_data
+        .filter { row -> row.data.reftreename }
+        .map { row -> [ row.meta.id, row ] }
+        .join(FASTA_NEWICK_EPANG_GAPPA.out.jplace.map { meta, jplace -> [ meta.id, jplace ] })
+        .join(ch_declared_taxonomy)
+        .map { id, row, jplace, declared_taxonomy -> [
+            row.data.reftreename,
+            [ id: id, jplace: jplace, taxonomy: row.data.taxonomy, declared_taxonomy: declared_taxonomy ]
+        ] }
+        .groupTuple()
+        .filter { _reftreename, rows -> rows.size() > 1 }
+        .map { reftreename, rows ->
+            // `gappa examine assign` takes a single --taxon-file, so a group has to agree
+            // on one. Placing onto a common tree the rows do not classify in common is a
+            // sample sheet mistake worth stopping for, rather than silently classifying
+            // the whole group by whichever row happened to come first.
+            if (rows.collect { r -> r.declared_taxonomy }.unique().size() > 1) {
+                error(
+                    "Rows grouped under reftreename '${reftreename}' declare different taxonomy files, " +
+                    "but one joint classification can only use one of them: " +
+                    rows.collect { r -> "${r.id} -> ${r.declared_taxonomy ?: '<none>'}" }.sort().join(', ') + '.'
+                )
+            }
+            [ [ id: reftreename ], rows.collect { r -> r.jplace }, rows.find { r -> r.taxonomy }?.taxonomy ?: [] ]
+        }
+
+    GAPPA_EDITMERGE ( ch_reftree_groups.map { meta, jplaces, _taxonomy -> [ meta, jplaces ] } )
+
+    GAPPA_JOINTGRAFT ( GAPPA_EDITMERGE.out.jplace )
+
+    GAPPA_JOINTASSIGN (
+        GAPPA_EDITMERGE.out.jplace
+            .join(ch_reftree_groups.map { meta, _jplaces, taxonomy -> [ meta, taxonomy ] })
+    )
+
+    GAPPA_JOINTHEATTREE ( GAPPA_EDITMERGE.out.jplace )
 
     //
     // Collate and save software versions
@@ -215,26 +297,25 @@ ${indentBlock("<pre>${escaped}</pre>", 2)}
 """
             ]
         }
-    // Reference trees with many tips can produce very large heat tree SVGs; skip embedding
-    // (rather than bloating the report) above this size and just point at the real output file.
-    def max_heattree_svg_bytes = 1_048_576
     def ch_heattree_mqc = FASTA_NEWICK_EPANG_GAPPA.out.heattree
         .collectFile { meta, svg_file ->
-            def size = svg_file.size()
-            def content = size <= max_heattree_svg_bytes
-                ? indentBlock(svg_file.text.replaceFirst(/^<\?xml[^>]*\?>\s*/, ''), 2)
-                : "  <p>Heat tree too large to embed (${(size / (1024 * 1024)).round(1)} MiB) &mdash; see <code>gappa/${svg_file.name}</code> in the pipeline output.</p>"
-            [
-                "${meta.id}.heattree_mqc.yaml",
-                """id: 'heattree_${meta.id}'
-section_name: 'GAPPA heat tree: ${meta.id}'
-description: 'Placement density heat tree, showing where in the reference phylogeny most query sequences were placed.'
-plot_type: 'html'
-data: |
-${content}
-"""
-            ]
+            heattreeMqc(
+                meta.id,
+                svg_file,
+                "GAPPA heat tree: ${meta.id}",
+                'Placement density heat tree, showing where in the reference phylogeny most query sequences were placed.'
+            )
         }
+        .mix(
+            GAPPA_JOINTHEATTREE.out.svg.collectFile { meta, svg_file ->
+                heattreeMqc(
+                    "joint_${meta.id}",
+                    svg_file,
+                    "GAPPA heat tree, reference tree ${meta.id}",
+                    "Placement density heat tree over the placements of every profile sharing the reference tree ${meta.id}, taken together."
+                )
+            }
+        )
 
     ch_multiqc_files = ch_multiqc_files.mix(ch_collated_versions)
     ch_multiqc_files = ch_multiqc_files.mix(ch_hmmbuild_mqc)

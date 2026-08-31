@@ -68,6 +68,39 @@ meth-dehydr,PF00389.hmm,PF00389.alnfaa,PF00389.newick,LG+F+I,PF00848.taxonomy.ts
 rnr,PF00788.hmm,,,,
 ```
 
+## Summarising several profiles on one reference tree
+
+Several rows can deliberately place onto one and the same reference phylogeny.
+Hierarchical HMM profiles are the usual reason: a class-level profile, plus the subclass profiles that exist to keep sequences from being misclassified at class level, all place onto the class-level reference tree.
+On its own that gives one grafted tree, one classification and one heat tree per profile, for hits that conceptually belong on a single tree.
+
+An optional `reftreename` column groups such rows.
+Rows sharing a value are summarised jointly **in addition to** individually: their placements are merged into one jplace file, which is then grafted, classified and heat-treed once, giving `<reftreename>.joint.*` outputs alongside the per-row ones.
+
+```csv title="phylosearch_sheet.csv"
+target,hmm,refseqfile,refphylogeny,model,taxonomy,reftreename
+NrdA,NrdA.hmm,NrdA.alnfaa,NrdA.newick,LG+F+I,NrdA.taxonomy.tsv,NrdA
+NrdAe,NrdAe.hmm,NrdA.alnfaa,NrdA.newick,LG+F+I,NrdA.taxonomy.tsv,NrdA
+NrdAr,NrdAr.hmm,NrdA.alnfaa,NrdA.newick,LG+F+I,NrdA.taxonomy.tsv,NrdA
+NrdJ,NrdJ.hmm,NrdJ.alnfaa,NrdJ.newick,LG+F+I,NrdJ.taxonomy.tsv,
+```
+
+The column works the same way in both sample sheet formats.
+
+A few things worth knowing about this:
+
+- Grouped rows have to place onto the same reference phylogeny.
+  `gappa` will not merge placements made on different trees, and the run fails with `Input jplace files have differing reference trees.` if they were.
+  They do not have to share an `alignmethod` though -- rows aligned with `hmmer` and with `mafft` merge fine, as long as the reference phylogeny is the same.
+- Grouped rows also have to agree on `taxonomy`, since one joint classification can only use one taxonomy file.
+  The pipeline stops before running anything, naming the rows and what each declared, if they disagree.
+  Rows that derive taxonomy from their reference sequences' own FASTA headers count as agreeing, since they take it from the same place.
+- A group needs at least two rows.
+  A `reftreename` used by a single row produces no joint output, since it would only duplicate that row's own.
+- Rows that leave `reftreename` empty keep their per-row outputs only, so adding the column to an existing sample sheet changes nothing until it is filled in.
+- One sequence can be hit by more than one profile in a group.
+  It is then placed once per profile and appears once per placement in the joint outputs, under the same name each time.
+
 ## Deriving taxonomy from FASTA headers
 
 `--taxonomy` is optional.
