@@ -127,7 +127,7 @@ Third, if a classification of the reference sequences is available (see [Taxonom
 <summary>Output files</summary>
 
 - `gappa/`
-  - `*.graft.*.newick`: Full phylogeny with query sequences grafted on to the reference phylogeny.
+  - `*.graft.newick`: Full phylogeny with query sequences grafted on to the reference phylogeny.
   - `*.heattree.*`: Files from calling `gappa examine heattree`, see [Gappa documentation](https://github.com/Pbdas/epa-ng/blob/master/README.md) for details.
   - `*.taxonomy.*`: Classification files from calling `gappa examine examinassign`, see [Gappa documentation](https://github.com/Pbdas/epa-ng/blob/master/README.md) for details.
 

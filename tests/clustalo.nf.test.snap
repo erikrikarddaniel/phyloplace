@@ -37,7 +37,7 @@
                 "epang/placement.query.fasta.gz",
                 "epang/placement.reference.fasta.gz",
                 "gappa",
-                "gappa/placement.graft.placement.epa_result.newick",
+                "gappa/placement.graft.newick",
                 "gappa/placement.heattree.colours.txt",
                 "gappa/placement.heattree.log",
                 "gappa/placement.heattree.tree.nexus",
@@ -80,7 +80,7 @@
             5,
             2
         ],
-        "timestamp": "2026-08-26T16:47:09.594739828",
+        "timestamp": "2026-08-31T20:40:16.553528812",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"

@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Changed`
 
+    - [#79](https://github.com/nf-core/phyloplace/pull/79) - Publish grafted trees as `<id>.graft.newick` instead of `<id>.graft.<id>.epa_result.newick`, dropping a repetition of the name and matching the new joint outputs (by @erikrikarddaniel)
     - [#77](https://github.com/nf-core/phyloplace/pull/77) - Adopt typed `params` blocks for pipeline-specific parameters, fixing boolean options (e.g. `--save_domtblout false`) that couldn't be turned off from the command line ([#74](https://github.com/nf-core/phyloplace/issues/74)) (by @erikrikarddaniel). Raises the minimum required Nextflow version to `26.04.0`.
     - [#73](https://github.com/nf-core/phyloplace/pull/73) - Update `seqtk/subseq` and `fasta_hmmsearch_rank_fastas` to fix output filenames glomming the input sequence filename onto the prefix ([nf-core/modules#12779](https://github.com/nf-core/modules/issues/12779)) (by @erikrikarddaniel)
     - [#68](https://github.com/nf-core/phyloplace/pull/68) - Template update to 4.1.0 (by @erikrikarddaniel)
