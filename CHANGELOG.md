@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
+    - [#79](https://github.com/nf-core/phyloplace/pull/79) - New optional `reftreename` sample sheet column, grouping rows that place onto the same reference tree so that the group is also grafted, classified and heat-treed as a whole, instead of only one profile at a time ([#78](https://github.com/nf-core/phyloplace/issues/78)) (by @erikrikarddaniel)
     - [#75](https://github.com/nf-core/phyloplace/pull/75) - Derive taxonomy from `--refseqfile` FASTA headers (GTDB single-file style) when `--taxonomy` is not given, instead of skipping taxonomic classification entirely ([#66](https://github.com/nf-core/phyloplace/issues/66)) (by @erikrikarddaniel)
     - [#72](https://github.com/nf-core/phyloplace/pull/72) - Alignment coordinates, lengths and coverage for each hit in the ranked `hmmsearch` summary, when `--save_domtblout` is set ([#70](https://github.com/nf-core/phyloplace/issues/70)) (by @erikrikarddaniel)
     - [#71](https://github.com/nf-core/phyloplace/pull/71) - New `--save_domtblout` option, saving hmmsearch's per-domain hit table in "search and place" mode ([#69](https://github.com/nf-core/phyloplace/issues/69)) (by @erikrikarddaniel)
@@ -17,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Changed`
 
+    - [#79](https://github.com/nf-core/phyloplace/pull/79) - Publish grafted trees as `<id>.graft.newick` instead of `<id>.graft.<id>.epa_result.newick`, dropping a repetition of the name and matching the new joint outputs (by @erikrikarddaniel)
     - [#77](https://github.com/nf-core/phyloplace/pull/77) - Adopt typed `params` blocks for pipeline-specific parameters, fixing boolean options (e.g. `--save_domtblout false`) that couldn't be turned off from the command line ([#74](https://github.com/nf-core/phyloplace/issues/74)) (by @erikrikarddaniel). Raises the minimum required Nextflow version to `26.04.0`.
     - [#73](https://github.com/nf-core/phyloplace/pull/73) - Update `seqtk/subseq` and `fasta_hmmsearch_rank_fastas` to fix output filenames glomming the input sequence filename onto the prefix ([nf-core/modules#12779](https://github.com/nf-core/modules/issues/12779)) (by @erikrikarddaniel)
     - [#68](https://github.com/nf-core/phyloplace/pull/68) - Template update to 4.1.0 (by @erikrikarddaniel)

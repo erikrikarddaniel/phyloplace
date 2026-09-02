@@ -55,7 +55,7 @@
                 "epang/bac16s.query.fasta.gz",
                 "epang/bac16s.reference.fasta.gz",
                 "gappa",
-                "gappa/arc.graft.arc.epa_result.newick",
+                "gappa/arc.graft.newick",
                 "gappa/arc.heattree.colours.txt",
                 "gappa/arc.heattree.log",
                 "gappa/arc.heattree.tree.nexus",
@@ -66,7 +66,7 @@
                 "gappa/arc.taxonomy.per_query.tsv",
                 "gappa/arc.taxonomy.profile.tsv",
                 "gappa/arc.taxonomy.sativa.tsv",
-                "gappa/bac16s.graft.bac16s.epa_result.newick",
+                "gappa/bac16s.graft.newick",
                 "gappa/bac16s.heattree.colours.txt",
                 "gappa/bac16s.heattree.log",
                 "gappa/bac16s.heattree.tree.nexus",
@@ -156,7 +156,7 @@
             54,
             11
         ],
-        "timestamp": "2026-08-26T17:11:06.000817378",
+        "timestamp": "2026-08-31T20:42:33.540952934",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
