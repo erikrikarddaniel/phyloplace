@@ -130,11 +130,9 @@ workflow PHYLOPLACE {
         ] }
         .mix(ch_phyloplace_data)
 
-    // What each row's sample sheet said about taxonomy, taken before CUSTOM_RESOLVETAXONOMY
-    // below replaces it with a resolved file. The joint step further down checks that a
-    // group of rows agrees on one taxonomy, and rows that derive theirs from identical
-    // reference sequences get one resolved file each, differing by path while holding the
-    // same content -- so the declared value is the only fair thing to compare.
+    // Compare what the sample sheet declared, not what CUSTOM_RESOLVETAXONOMY resolves: rows
+    // deriving taxonomy from identical reference sequences each get their own resolved file,
+    // equal in content but not in path, and the group check below would reject them.
     def ch_declared_taxonomy = ch_phyloplace_data
         .map { row -> [ row.meta.id, row.data.taxonomy ? row.data.taxonomy.toString() : '' ] }
 
@@ -188,13 +186,9 @@ workflow PHYLOPLACE {
 
     //
     // MODULES: Summarise placements per reference tree, on top of the per-row summaries
-    // above. Rows naming the same `reftreename` place onto one and the same reference
-    // phylogeny -- hierarchical HMM profiles built around a single reference tree, say --
-    // so their placements belong on one grafted tree rather than one each. `gappa examine
-    // assign` and `heat-tree` merge several jplace files on their own, but `graft` does
-    // not, so the group's jplace files are merged first and all three run off the merged
-    // file. Rows without a `reftreename` are left alone, as are groups of a single row,
-    // whose joint output would only duplicate its per-row one.
+    // above. `gappa examine assign` and `heat-tree` merge several jplace files themselves,
+    // but `graft` does not, so the group is merged first and all three run off the merged
+    // file. Single-row groups are dropped; their joint output would only repeat the per-row one.
     //
     def ch_reftree_groups = ch_phyloplace_data
         .filter { row -> row.data.reftreename }
@@ -208,10 +202,9 @@ workflow PHYLOPLACE {
         .groupTuple()
         .filter { _reftreename, rows -> rows.size() > 1 }
         .map { reftreename, rows ->
-            // `gappa examine assign` takes a single --taxon-file, so a group has to agree
-            // on one. Placing onto a common tree the rows do not classify in common is a
-            // sample sheet mistake worth stopping for, rather than silently classifying
-            // the whole group by whichever row happened to come first.
+            // `gappa examine assign` takes a single --taxon-file, so the group has to agree
+            // on one. Stop rather than pick: classifying the whole group by whichever row
+            // came first is a wrong answer, not a smaller problem.
             if (rows.collect { r -> r.declared_taxonomy }.unique().size() > 1) {
                 error(
                     "Rows grouped under reftreename '${reftreename}' declare different taxonomy files, " +
