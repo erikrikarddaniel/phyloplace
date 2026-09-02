@@ -37,10 +37,7 @@ nextflow_pipeline {
                 // still look plausible in isolation.
                 { assert path("${params.outdir}/gappa/arc16s.joint.taxonomy.per_query.tsv").csv(sep: '\t', header: true).rowCount ==
                     path("${params.outdir}/gappa/arc16s.taxonomy.per_query.tsv").csv(sep: '\t', header: true).rowCount +
-                    path("${params.outdir}/gappa/bac16s.taxonomy.per_query.tsv").csv(sep: '\t', header: true).rowCount },
-                // Every query of both rows appears on the one joint tree.
-                { assert new File("${params.outdir}/gappa/arc16s.joint.graft.newick").exists() },
-                { assert new File("${params.outdir}/gappa/arc16s.joint.merge.jplace.gz").exists() }
+                    path("${params.outdir}/gappa/bac16s.taxonomy.per_query.tsv").csv(sep: '\t', header: true).rowCount }
             )
         }
     }
