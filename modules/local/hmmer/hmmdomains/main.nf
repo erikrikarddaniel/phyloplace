@@ -32,28 +32,35 @@ process HMMER_HMMDOMAINS {
     library(stringr)
 
     # Columns follow HMMER's --domtblout layout; the unused ones still need a name each to
-    # keep the rest aligned, hence d0..d8.
+    # keep the rest aligned, hence d0..d8. Splitting a table produces 23 character columns
+    # for every row of it, so each file is cut down to the dozen typed columns that survive
+    # before the next is read -- holding all of them at full width at once is what makes this
+    # run out of memory on a search with many profiles.
 
-    domains <- read_fwf(
-        c('${domtblouts.join("','")}'), fwf_cols(content = c(1, NA)),
-        col_types = cols(content = col_character()), comment = '#', id = 'fname'
-    ) %>%
-        filter(! str_detect(content, '^ *#')) %>%
-        separate(
-            content,
-            c(
-                'accno', 'd0', 'tlen', 'model', 'd1', 'qlen', 'd2', 'd3', 'd4', 'd5', 'd6',
-                'cevalue', 'ievalue', 'score', 'd7',
-                'hmm_from', 'hmm_to', 'ali_from', 'ali_to', 'env_from', 'env_to', 'd8', 'rest'
-            ),
-            '\\\\s+', extra = 'merge', convert = FALSE
+    read_domtbl <- function(fname) {
+        read_fwf(
+            fname, fwf_cols(content = c(1, NA)),
+            col_types = cols(content = col_character()), comment = '#'
         ) %>%
-        transmute(
-            profile = basename(fname) %>% str_remove('^${prefix}\\\\.') %>% str_remove('\\\\.domtbl\\\\.gz\$'),
-            accno, model,
-            across(c(tlen, qlen, hmm_from, hmm_to, ali_from, ali_to, env_from, env_to), as.integer),
-            across(c(cevalue, ievalue, score), as.double)
-        ) %>%
+            filter(! str_detect(content, '^ *#')) %>%
+            separate(
+                content,
+                c(
+                    'accno', 'd0', 'tlen', 'model', 'd1', 'qlen', 'd2', 'd3', 'd4', 'd5', 'd6',
+                    'cevalue', 'ievalue', 'score', 'd7',
+                    'hmm_from', 'hmm_to', 'ali_from', 'ali_to', 'env_from', 'env_to', 'd8', 'rest'
+                ),
+                '\\\\s+', extra = 'merge', convert = FALSE
+            ) %>%
+            transmute(
+                profile = basename(fname) %>% str_remove('^${prefix}\\\\.') %>% str_remove('\\\\.domtbl\\\\.gz\$'),
+                accno, model,
+                across(c(tlen, qlen, hmm_from, hmm_to, ali_from, ali_to, env_from, env_to), as.integer),
+                across(c(cevalue, ievalue, score), as.double)
+            )
+    }
+
+    domains <- bind_rows(lapply(c('${domtblouts.join("','")}'), read_domtbl)) %>%
         # One hmm file may hold several models, and then the file name alone doesn't say what
         # matched; only in that case is the model name worth carrying into the label.
         group_by(profile) %>%
@@ -65,26 +72,46 @@ process HMMER_HMMDOMAINS {
     # measured against the shorter of the two envelopes so the tolerance means the same for a
     # short profile as a long one. Envelope, not ali, coordinates: ali bounds stop at the
     # aligned core and would under-count how much of the sequence a domain really occupies.
+    #
+    # Sorting first leaves each sequence's hits in one contiguous block, already in the order
+    # they need to be considered, so the scan can walk index ranges over plain vectors. Handing
+    # each sequence to a function instead costs milliseconds per sequence, which turns into
+    # hours once a search covers a metagenome's worth of them.
 
-    resolve <- function(d) {
-        d    <- arrange(d, desc(score), ievalue, profile, model)
-        from <- d[['env_from']]
-        to   <- d[['env_to']]
-        len  <- to - from + 1L
-        keep <- logical(length(from))
-        for (i in seq_along(from)) {
-            a <- which(keep)
-            keep[i] <- length(a) == 0 || all(
-                pmax(0L, pmin(to[i], to[a]) - pmax(from[i], from[a]) + 1L) / pmin(len[i], len[a]) <= ${max_overlap}
-            )
+    domains <- domains[
+        order(
+            domains[['accno']], -domains[['score']], domains[['ievalue']],
+            domains[['profile']], domains[['model']]
+        ),
+    ]
+
+    from   <- domains[['env_from']]
+    to     <- domains[['env_to']]
+    len    <- to - from + 1L
+    keep   <- logical(nrow(domains))
+    blocks <- rle(domains[['accno']])[['lengths']]
+    ends   <- cumsum(blocks)
+    starts <- ends - blocks + 1L
+
+    for (b in seq_along(starts)) {
+        if (blocks[b] == 1L) {
+            keep[starts[b]] <- TRUE
+            next
         }
-        d[keep, ]
+        kept <- integer(0)
+        for (i in starts[b]:ends[b]) {
+            if (!length(kept) || all(
+                pmax(0L, pmin(to[i], to[kept]) - pmax(from[i], from[kept]) + 1L) / pmin(len[i], len[kept]) <= ${max_overlap}
+            )) {
+                kept <- c(kept, i)
+            }
+        }
+        keep[kept] <- TRUE
     }
 
-    resolved <- domains %>%
+    resolved <- domains[keep, ] %>%
+        arrange(accno, env_from) %>%
         group_by(accno) %>%
-        group_modify(~ resolve(.x)) %>%
-        arrange(env_from, .by_group = TRUE) %>%
         mutate(i = row_number(), n = n()) %>%
         ungroup() %>%
         transmute(
@@ -102,21 +129,23 @@ process HMMER_HMMDOMAINS {
     # length, and any real gap keeps at least one dash rather than rounding away to nothing.
     # Domains kept despite overlapping leave no gap to draw and simply sit next to each other.
 
-    sketch <- function(label, from, to, tlen) {
-        gaps   <- pmax(0L, c(from - 1L, tlen) - c(1L, to + 1L) + 1L)
-        dashes <- ifelse(gaps > 0L, pmax(1L, as.integer(round(gaps / tlen * 20))), 0L)
-        paste0(
-            strrep('-', dashes[1]),
-            paste0('<', label, '>', strrep('-', dashes[-1]), collapse = '')
-        )
+    dashes <- function(gap, tlen) {
+        ifelse(gap > 0L, pmax(1L, as.integer(round(gap / tlen * 20))), 0L)
     }
 
     resolved %>%
         group_by(accno) %>%
+        mutate(
+            piece = paste0(
+                strrep('-', dashes(env_from - if_else(i == 1L, 0L, lag(env_to)) - 1L, tlen)),
+                '<', label, '>',
+                if_else(i == n, strrep('-', dashes(tlen - env_to, tlen)), '')
+            )
+        ) %>%
         summarise(
             tlen = tlen[1], n_domains = n(), covered = sum(env_len),
             architecture = paste(label, collapse = '|'),
-            sketch = sketch(label, env_from, env_to, tlen[1]),
+            sketch = paste(piece, collapse = ''),
             .groups = 'drop'
         ) %>%
         write_tsv('${prefix}.hmmarchitectures.tsv.gz')
