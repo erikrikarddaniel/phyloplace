@@ -131,6 +131,33 @@ Add `--save_domtblout` to also write the per-domain table, as one gzipped `*.dom
 The per-domain table is the only output that carries alignment coordinates, so it is what you need to work out how much of a profile a hit covers, or to find a gene split over several adjacent ORFs where no single ORF covers enough of the profile to be classified on its own.
 Setting the flag also adds coordinate and length columns to the ranked summary in `*.hmmrank.tsv.gz`, which is usually the easier place to read them off; see the [output documentation](output.md) for what each column means.
 
+## Domain architectures
+
+The ranked summary in `*.hmmrank.tsv.gz` answers "which profile fits this sequence best", which is the wrong question for a sequence carrying more than one domain: a protein with two different domains matched by two different profiles collapses to whichever profile scored higher overall, and the second domain disappears.
+Setting `--save_domtblout` therefore also produces a domain-level view, in `*.hmmdomains.tsv.gz` and `*.hmmarchitectures.tsv.gz`, which asks the question per stretch of sequence instead.
+
+Hits are taken best-scoring first, and a weaker hit is kept only where it stays clear of every hit already kept.
+"Clear" allows a little overlap, since neighbouring domains commonly share a few residues, and is measured as a fraction of the shorter of the two envelopes so the tolerance means the same thing for a short profile as for a long one.
+`--domain_max_overlap` sets that fraction, 0.2 by default:
+
+```bash
+--phylosearch_input '[path to samplesheet file]' --search_fasta '[path to fasta file]' --save_domtblout --domain_max_overlap 0.3
+```
+
+Two profiles describing the same domain -- homologous profiles from the same family, say -- overlap almost entirely, so the higher-scoring one takes that stretch and the other is dropped.
+Two genuinely different domains do not overlap, so both survive and the sequence gets a two-element architecture.
+Raise the value towards 1 to keep competing profiles that describe the same stretch, or lower it towards 0 to demand strictly separate domains.
+
+Note that which profile wins is decided per stretch, not per sequence, so one sequence can be claimed by different profiles in different places.
+_Mycolicibacterium smegmatis_ QcrCC carries two cytochrome c domains that both `PF00034` and `PF13442` match, and the two profiles win one domain each; the architecture summary renders that as
+
+```
+accno                   tlen  n_domains  covered  architecture      sketch
+tr|A0R050|A0R050_MYCS2  268   2          153      PF00034|PF13442   ----<PF00034>--<PF13442>---
+```
+
+The `architecture` column is the one to group or join on; the `sketch` is a scale drawing meant for reading, where each dash stands for a twentieth of the sequence no profile claimed.
+
 ## Running the pipeline
 
 Run the pipeline with command line parameters specifying the placement parameters as follows:

@@ -4,6 +4,7 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+include { HMMER_HMMDOMAINS              } from '../modules/local/hmmer/hmmdomains'
 include { HMMER_HMMEXTRACT              } from '../modules/local/hmmer/hmmextract'
 include { CUSTOM_RESOLVETAXONOMY        } from '../modules/nf-core/custom/resolvetaxonomy/main'
 include { GAPPA_EDITMERGE               } from '../modules/nf-core/gappa/editmerge/main'
@@ -73,6 +74,7 @@ workflow PHYLOPLACE {
     ch_phylosearch_data // channel: [ meta: [ id: string, min_bitscore: int ], data: [ alignmethod: string, hmm: file, extract_hmm: file, refseqfile: fasta, refphylogeny: newick, model: string, taxonomy: tsv ] ]
     ch_sequence_fasta   // channel: sequences to search
     save_domtblout      // boolean: also save hmmsearch's per-domain hit table (--domtblout)
+    domain_max_overlap  // double: fraction of the shorter envelope two domain hits may share and still both be kept
     multiqc_config
     multiqc_logo
     multiqc_methods_description
@@ -103,6 +105,19 @@ workflow PHYLOPLACE {
         .set { ch_search_profiles }
 
     FASTA_HMMSEARCH_RANK_FASTAS(ch_search_profiles, ch_sequence_fasta, save_domtblout)
+
+    //
+    // MODULE: Work out a domain architecture per sequence -- which profile wins each stretch
+    // of it, rather than the sequence as a whole. The per-domain coordinates it needs only
+    // exist when they were asked for, so without them this channel stays empty and the
+    // module doesn't run.
+    //
+    FASTA_HMMSEARCH_RANK_FASTAS.out.domain_summary
+        .collect { index -> index[1] }
+        .map { index -> [ [ id: 'rank' ], index ] }
+        .set { ch_hmmdomains }
+
+    HMMER_HMMDOMAINS(ch_hmmdomains, domain_max_overlap)
 
     ch_phyloplace_data = FASTA_HMMSEARCH_RANK_FASTAS.out.seqfastas
         .join(

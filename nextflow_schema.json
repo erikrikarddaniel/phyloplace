@@ -48,6 +48,15 @@
                     "help_text": "In \"search and place\" mode, also write hmmsearch's per-domain hit table, one gzipped `*.domtbl.gz` file per profile, to the `hmmer` output directory. Unlike the per-sequence table, this one carries alignment coordinates for each domain, which are needed to work out profile coverage or to find genes split over several ORFs.",
                     "fa_icon": "fas fa-table"
                 },
+                "domain_max_overlap": {
+                    "type": "number",
+                    "default": 0.2,
+                    "minimum": 0,
+                    "maximum": 1,
+                    "description": "Fraction of the shorter of two domain hits they may overlap and still both be reported.",
+                    "help_text": "Controls how the per-sequence domain architecture is worked out in \"search and place\" mode (written when `--save_domtblout` is set). Hits are taken best-scoring first, and a weaker one is kept only where it overlaps every already-kept hit by no more than this fraction of the shorter of the two envelopes. Raise it to keep competing profiles that describe the same stretch, lower it towards 0 to demand strictly separate domains.",
+                    "fa_icon": "fas fa-arrows-left-right"
+                },
                 "id": {
                     "type": "string",
                     "description": "Name of analysis",

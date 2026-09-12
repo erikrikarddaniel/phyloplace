@@ -1,0 +1,102 @@
+nextflow_process {
+
+    name "Test Process HMMER_HMMDOMAINS"
+    script "../main.nf"
+    process "HMMER_HMMDOMAINS"
+
+    tag "modules"
+    tag "modules_local"
+    tag "hmmer"
+    tag "hmmer/hmmsearch"
+    tag "hmmer/hmmdomains"
+
+    // Mycolicibacterium smegmatis QcrCC carries two cytochrome c domains, and both Pfam
+    // profiles match both of them -- PF00034 scoring higher on the first, PF13442 on the
+    // second. That makes the winner differ between the two stretches of one sequence, which
+    // is the case this module exists for and what a single dominant profile would not test.
+    // Pulled from UniProt and InterPro directly; it moves to test-datasets if the module
+    // ever goes to nf-core/modules.
+    setup {
+        run("HMMER_HMMSEARCH") {
+            script "../../../../nf-core/hmmer/hmmsearch/main.nf"
+            process {
+                """
+                // InterPro serves the profile gzipped, but from a URL whose last path
+                // segment is the bare accession, so it stages without the .gz that tells
+                // hmmsearch to decompress it. Copying it to a named file restores that.
+                input[0] = channel.fromList([ 'PF00034', 'PF13442' ]).map { acc -> [
+                    [ id: acc ],
+                    file("https://www.ebi.ac.uk/interpro/api/entry/pfam/\${acc}/?annotation=hmm", checkIfExists: true)
+                        .copyTo("\${workflow.workDir}/\${acc}.hmm.gz"),
+                    file('https://rest.uniprot.org/uniprotkb/A0R050.fasta', checkIfExists: true),
+                    false, true, true
+                ] }
+                """
+            }
+        }
+    }
+
+    test("hmmdomains - QcrCC") {
+        when {
+            process {
+                """
+                input[0] = HMMER_HMMSEARCH.out.domain_summary
+                    .collect { it[1] }
+                    .map { [ [ id: 'rank' ], it ] }
+                input[1] = 0.2
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+
+    // The competing profiles here overlap almost entirely, so every threshold below 1
+    // resolves them the same way; 1 is what actually changes the result, by keeping the
+    // losers. Anything in between would snapshot identically to the test above and could
+    // therefore never fail.
+    test("hmmdomains - QcrCC, overlap unrestricted") {
+        when {
+            process {
+                """
+                input[0] = HMMER_HMMSEARCH.out.domain_summary
+                    .collect { it[1] }
+                    .map { [ [ id: 'rank' ], it ] }
+                input[1] = 1
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+
+    test("hmmdomains - QcrCC - stub") {
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = [ [ id: 'rank' ], [] ]
+                input[1] = 0.2
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+}

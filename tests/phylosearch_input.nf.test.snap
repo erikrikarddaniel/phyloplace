@@ -24,6 +24,10 @@
                 "GAPPA_HEATTREE": {
                     "gappa": "0.9.0"
                 },
+                "HMMER_HMMDOMAINS": {
+                    "r-base": "4.2.3",
+                    "r-tidyverse": "2.0.0"
+                },
                 "HMMER_HMMEXTRACT": {
                     "hmmsearch": 3.4
                 },
@@ -97,6 +101,8 @@
                 "hmmer/mito16s.domtbl.gz",
                 "hmmer/mito16s.tbl.gz",
                 "hmmer/mito16s.txt.gz",
+                "hmmer/rank.hmmarchitectures.tsv.gz",
+                "hmmer/rank.hmmdomains.tsv.gz",
                 "hmmer/rank.hmmrank.tsv.gz",
                 "multiqc",
                 "multiqc/multiqc_data",
@@ -137,6 +143,8 @@
                 "bac16s.hmm:md5,a4dcd05876712b7bacddcdfb4662f6df",
                 "euk18s.hmm:md5,7257b503fc0eabe7cefef4e31cd6d8c4",
                 "euk28s.hmm:md5,5686ecd69ead0cabfefb74320d1207fb",
+                "rank.hmmarchitectures.tsv.gz:md5,d5c86193881c29ed58c98fd3796d56cf",
+                "rank.hmmdomains.tsv.gz:md5,5fdbac51267219bd2986c84a4378c14e",
                 "rank.hmmrank.tsv.gz:md5,c5634dcd5d13efb396e01cd8fd8324eb",
                 "multiqc_citations.txt:md5,4c806e63a283ec1b7e78cdae3a923d4f",
                 "arc.resolved.fasta:md5,5b5e525bdf70c97f1c9abf61e7c9457e",
@@ -156,7 +164,7 @@
             54,
             11
         ],
-        "timestamp": "2026-08-31T20:42:33.540952934",
+        "timestamp": "2026-09-12T08:59:00.607814213",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"

@@ -67,6 +67,15 @@ The MAFFT alignment strategy keeps the structure of the original reference align
   - `*.hmmrank.tsv.gz`: Summarised `hmmsearch` results, one row per sequence and profile, ranking the profiles that matched each sequence.
     When `--save_domtblout` is set, each row also carries the sequence and profile lengths (`tlen`, `qlen`) and, for each of the `hmm`, `ali` and `env` coordinate sets, the match bounds (`x_from`, `x_to`), the covered length (`x_len`) and the number of separate stretches it falls into (`x_n_islands`) -- e.g. profile coverage is `hmm_len / qlen`.
     Rows whose hit cleared the per-sequence threshold but has no domain records of its own (possible, since `--domtblout` uses a stricter per-domain threshold) carry `NA` in all of these columns instead.
+  - `*.hmmdomains.tsv.gz`: Domain-level summary, one row per retained domain, only written when `--save_domtblout` is set.
+    Where `*.hmmrank.tsv.gz` asks which profile fits a sequence best, this asks which profile fits each _stretch_ of it best, so a sequence carrying several domains keeps one row per domain rather than collapsing to a single hit.
+    Each row carries the sequence, the domain's position `i` of `n` along it, the winning profile and model, the domain's own score and E-values, the sequence and profile lengths, and `from`, `to` and `len` for each of the `hmm`, `ali` and `env` coordinate sets.
+    See `--domain_max_overlap` for how competing profiles are resolved.
+  - `*.hmmarchitectures.tsv.gz`: One row per sequence summarising the above: the sequence, its length, how many domains were retained, how many residues they cover between them, the architecture -- those domains' labels in order along the sequence, joined by `|` -- and a sketch of the same arrangement.
+    Sequences with the same domain arrangement get the same architecture string, so it groups directly.
+    The label is the profile name, or `profile:model` where one profile file holds several models and the name alone wouldn't say what matched.
+    The sketch draws that arrangement to scale for reading rather than parsing, each domain in angle brackets and each dash a twentieth of the sequence left uncovered, so a two-domain protein comes out as something like `----<PF00034>--<PF13442>---`.
+    A gap shorter than a twentieth still gets one dash rather than disappearing, and domains kept despite overlapping have no gap between them to draw.
 
 </details>
 

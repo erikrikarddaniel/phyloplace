@@ -1,0 +1,108 @@
+name: "hmmer_hmmdomains"
+description: R script that resolves hmmsearch's per-domain hits across profiles into one domain architecture per sequence
+keywords:
+  - hmmer
+  - hmmsearch
+  - domain
+  - architecture
+tools:
+  - "hmmer":
+      description: "Biosequence analysis using profile hidden Markov models"
+      homepage: http://hmmer.org/
+      documentation: http://hmmer.org/documentation.html
+      tool_dev_url: https://github.com/EddyRivasLab/hmmer
+      doi: "10.1371/journal.pcbi.1002195"
+      licence:
+        - "BSD"
+      identifier: ""
+  - "R":
+      description: "A Language and Environment for Statistical Computing"
+      homepage: https://www.r-project.org/
+      documentation: https://www.r-project.org/
+      licence:
+        - "GPL v2"
+      identifier: ""
+  - "Tidyverse":
+      description: "Tidyverse: R packages for data science"
+      homepage: https://www.tidyverse.org/
+      documentation: https://www.tidyverse.org/
+      tool_dev_url: https://github.com/tidyverse
+      doi: "10.21105/joss.01686"
+      licence:
+        - "MIT"
+      identifier: ""
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - domtblouts:
+        type: file
+        description: |
+          Per-domain hit tables from hmmsearch (--domtblout), one per profile searched. The
+          profile a hit belongs to is taken from the file name, so all of them are read in
+          one go and compared against each other.
+        pattern: "*.domtbl.gz"
+        ontologies:
+          - edam: http://edamontology.org/format_3989 # GZIP format
+  - - max_overlap:
+        type: float
+        description: |
+          Fraction of the shorter of two envelopes that they may share and still both be
+          kept. 0 demands strictly disjoint domains, 1 keeps every hit hmmsearch reported.
+output:
+  domains:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*.hmmdomains.tsv.gz":
+          type: file
+          description: |
+            TSV file with one row per retained domain: accno, its position i of n along the
+            sequence, the profile and model that won the stretch, the label used in the
+            architecture string, the domain's own score, c-Evalue and i-Evalue, the target
+            and profile lengths, and from, to and len for each of the hmm, ali and env
+            coordinate sets.
+          pattern: "*.hmmdomains.tsv.gz"
+          ontologies:
+            - edam: http://edamontology.org/format_3989 # GZIP format
+  architectures:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*.hmmarchitectures.tsv.gz":
+          type: file
+          description: |
+            TSV file with one row per sequence: accno, target length, the number of domains
+            retained, the residues they cover between them, the architecture -- the labels of
+            those domains in order along the sequence, joined by "|", so sequences sharing an
+            architecture group on it directly -- and a sketch of the same arrangement drawn
+            to scale, each domain in angle brackets and each dash a twentieth of the sequence
+            left uncovered.
+          pattern: "*.hmmarchitectures.tsv.gz"
+          ontologies:
+            - edam: http://edamontology.org/format_3989 # GZIP format
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+        ontologies:
+          - edam: http://edamontology.org/format_3750 # YAML
+topics:
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+        ontologies:
+          - edam: http://edamontology.org/format_3750 # YAML
+authors:
+  - "@erikrikarddaniel"
+maintainers:
+  - "@erikrikarddaniel"

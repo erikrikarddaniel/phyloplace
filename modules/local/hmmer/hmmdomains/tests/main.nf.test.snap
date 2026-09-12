@@ -1,0 +1,149 @@
+{
+    "hmmdomains - QcrCC - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "rank"
+                        },
+                        "rank.hmmdomains.tsv.gz:md5,b02c478d3395849f62068d61a60c1f63"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "rank"
+                        },
+                        "rank.hmmarchitectures.tsv.gz:md5,d990fe902cfc21296b92b128930b32ca"
+                    ]
+                ],
+                "2": [
+                    "versions.yml:md5,1a552c367aa31e2fe553c5c373ff714a"
+                ],
+                "architectures": [
+                    [
+                        {
+                            "id": "rank"
+                        },
+                        "rank.hmmarchitectures.tsv.gz:md5,d990fe902cfc21296b92b128930b32ca"
+                    ]
+                ],
+                "domains": [
+                    [
+                        {
+                            "id": "rank"
+                        },
+                        "rank.hmmdomains.tsv.gz:md5,b02c478d3395849f62068d61a60c1f63"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,1a552c367aa31e2fe553c5c373ff714a"
+                ]
+            }
+        ],
+        "timestamp": "2026-09-12T08:57:32.322691945",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    },
+    "hmmdomains - QcrCC": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "rank"
+                        },
+                        "rank.hmmdomains.tsv.gz:md5,367c98b80339e2ebfd30f3bad73756be"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "rank"
+                        },
+                        "rank.hmmarchitectures.tsv.gz:md5,bfb8b3bdebc709a727f5a8a30e22116b"
+                    ]
+                ],
+                "2": [
+                    "versions.yml:md5,1a552c367aa31e2fe553c5c373ff714a"
+                ],
+                "architectures": [
+                    [
+                        {
+                            "id": "rank"
+                        },
+                        "rank.hmmarchitectures.tsv.gz:md5,bfb8b3bdebc709a727f5a8a30e22116b"
+                    ]
+                ],
+                "domains": [
+                    [
+                        {
+                            "id": "rank"
+                        },
+                        "rank.hmmdomains.tsv.gz:md5,367c98b80339e2ebfd30f3bad73756be"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,1a552c367aa31e2fe553c5c373ff714a"
+                ]
+            }
+        ],
+        "timestamp": "2026-09-12T08:57:08.81860633",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    },
+    "hmmdomains - QcrCC, overlap unrestricted": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "rank"
+                        },
+                        "rank.hmmdomains.tsv.gz:md5,dbaf4b236fbe46255ae873411fe95259"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "rank"
+                        },
+                        "rank.hmmarchitectures.tsv.gz:md5,dd5a789438d0b3e95082277909913f99"
+                    ]
+                ],
+                "2": [
+                    "versions.yml:md5,1a552c367aa31e2fe553c5c373ff714a"
+                ],
+                "architectures": [
+                    [
+                        {
+                            "id": "rank"
+                        },
+                        "rank.hmmarchitectures.tsv.gz:md5,dd5a789438d0b3e95082277909913f99"
+                    ]
+                ],
+                "domains": [
+                    [
+                        {
+                            "id": "rank"
+                        },
+                        "rank.hmmdomains.tsv.gz:md5,dbaf4b236fbe46255ae873411fe95259"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,1a552c367aa31e2fe553c5c373ff714a"
+                ]
+            }
+        ],
+        "timestamp": "2026-09-12T08:57:22.317286431",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    }
+}

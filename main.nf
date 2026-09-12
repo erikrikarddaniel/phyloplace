@@ -34,6 +34,7 @@ params {
     taxonomy:                     String? = null
     search_fasta:                 String? = null
     save_domtblout:               Boolean = false
+    domain_max_overlap:            Double = 0.2d
 
     // MultiQC options
     multiqc_config:               String? = null
@@ -97,6 +98,7 @@ workflow NFCORE_PHYLOPLACE {
         phylosearch_data,
         sequence_fasta,
         params.save_domtblout,
+        params.domain_max_overlap,
         params.multiqc_config,
         params.multiqc_logo,
         params.multiqc_methods_description,

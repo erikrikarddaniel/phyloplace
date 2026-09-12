@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
+- [#NN](https://github.com/nf-core/phyloplace/pull/NN) - Domain architectures in "search and place" mode: alongside the per-sequence ranking, `--save_domtblout` now also writes `*.hmmdomains.tsv.gz` and `*.hmmarchitectures.tsv.gz`, picking the best-scoring profile for each stretch of a sequence so that a sequence carrying several domains keeps one hit per domain. The new `--domain_max_overlap` sets how much two hits may overlap and still both be reported ([#89](https://github.com/nf-core/phyloplace/issues/89)) (by @erikrikarddaniel)
+
 ### `Fixed`
 
 ### `Changed`
